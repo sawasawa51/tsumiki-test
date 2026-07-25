@@ -1,9 +1,19 @@
 @font-face {
-font-family: "Corporate Logo";
-src: url("./Corporate-Logo-Medium-ver3.otf") format("opentype");
-font-weight: 500;
-font-style: normal;
-font-display: swap;
+  font-family: "CorporateLogo";
+  src: url("./Corporate-Logo-Medium-ver3.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+html,
+body,
+body *,
+button,
+input,
+textarea,
+select {
+  font-family: "CorporateLogo", sans-serif !important;
 }
 
 * {
