@@ -1159,6 +1159,67 @@ if (resultSideLogo) resultSideLogo.style.display = "none";
 updateRegenerateCountText();
 }
 
+function sleep(ms) {
+return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function loadImageWithRetry(imgElement, src, maxAttempts = 5) {
+return new Promise(async (resolve, reject) => {
+let lastError = null;
+
+for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+try {
+await new Promise((innerResolve, innerReject) => {
+imgElement.onload = () => innerResolve();
+imgElement.onerror = () => innerReject(new Error(`AI画像の読み込みに失敗しました ${attempt}/${maxAttempts}`));
+imgElement.src = `${src}&retry=${attempt}&t=${Date.now()}`;
+});
+
+resolve();
+return;
+} catch (error) {
+lastError = error;
+console.warn("AI画像読み込みをリトライします", error);
+
+if (attempt < maxAttempts) {
+await sleep(900 * attempt);
+}
+}
+}
+
+reject(lastError || new Error("AI画像の読み込みに失敗しました"));
+});
+}
+
+async function createSignedUrlWithRetry(path, maxAttempts = 5) {
+let lastError = null;
+
+for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+try {
+const { data, error } = await supabaseClient.storage
+.from(SUPABASE_BUCKET)
+.createSignedUrl(path, 60 * 10);
+
+if (error) throw error;
+
+if (!data || !data.signedUrl) {
+throw new Error("signedUrl が取得できませんでした");
+}
+
+return data.signedUrl;
+} catch (error) {
+lastError = error;
+console.warn("AI画像URL取得をリトライします", error);
+
+if (attempt < maxAttempts) {
+await sleep(900 * attempt);
+}
+}
+}
+
+throw lastError || new Error("signedUrl が取得できませんでした");
+}
+
 async function showAiResult(fileName) {
 const targetFileName = fileName || getCurrentAiCandidateFileName() || state.aiFile;
 const aiPath = `outputs/${targetFileName}`;
@@ -1183,17 +1244,10 @@ if (!aiPreview) return;
 aiPreview.style.display = "none";
 
 try {
-const { data, error } = await supabaseClient.storage
-.from(SUPABASE_BUCKET)
-.createSignedUrl(aiPath, 60 * 10);
+const signedUrl = await createSignedUrlWithRetry(aiPath, 5);
 
-if (error) throw error;
+await loadImageWithRetry(aiPreview, signedUrl, 5);
 
-if (!data || !data.signedUrl) {
-throw new Error("signedUrl が取得できませんでした");
-}
-
-aiPreview.onload = () => {
 aiPreview.style.display = "block";
 
 const resultCenterMessage = document.getElementById("resultCenterMessage");
@@ -1227,22 +1281,6 @@ beforeAfterToggleLabel.textContent = "つみき";
 }
 
 updateAiVersionControls();
-};
-
-aiPreview.onerror = () => {
-aiPreview.style.display = "none";
-
-if (aiPlaceholder) {
-aiPlaceholder.style.display = "block";
-aiPlaceholder.textContent = `がぞうをよみこめませんでした\n${aiPath}`;
-}
-
-if (completeMessage) {
-completeMessage.textContent = "スタッフをよんでください";
-}
-};
-
-aiPreview.src = `${data.signedUrl}&t=${Date.now()}`;
 } catch (error) {
 console.error(error);
 
