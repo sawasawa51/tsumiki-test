@@ -3,7 +3,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_ZFerPQIhZEyNSV_AK8Kryg_bWBs_UeT";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const SUPABASE_BUCKET = "tsumiki-ipad";
-const AI_FUNCTION_NAME = "rapid-function";
+const TRANSFORM_FUNCTION_NAME = "rapid-function";
 
 const state = {
 numberInput: "",
@@ -73,7 +73,7 @@ console.log("Fullscreen is not available:", error);
 async function startApp() {
 await enterFullscreen();
 updateAppHeight();
-goToPage("page-number");
+goToPage("page-howto");
 }
 
 /* ==================================================
@@ -925,7 +925,7 @@ img.alt = label;
 }
 
 /* ==================================================
-AI Prompt
+Prompt
 ================================================== */
 function buildAiPrompt() {
 const q1Prompt = getCardPromptFromCsv(state.q1);
@@ -982,7 +982,7 @@ instruction: "Use this image as visual inspiration for the building exterior des
 }
 
 /* ==================================================
-Supabase / AI
+Supabase
 ================================================== */
 function setSubmitStatus(message) {
 const status = document.getElementById("submitStatus");
@@ -1023,7 +1023,7 @@ async function generateAiImage(candidateIndex) {
 const prompt = buildAiPrompt();
 const candidateFile = getAiCandidateFileName(candidateIndex);
 
-const { data, error } = await supabaseClient.functions.invoke(AI_FUNCTION_NAME, {
+const { data, error } = await supabaseClient.functions.invoke(TRANSFORM_FUNCTION_NAME, {
 body: {
 photo_path: `photos/${state.photoFile}`,
 output_path: `outputs/${candidateFile}`,
@@ -1037,7 +1037,7 @@ throw error;
 }
 
 if (!data || data.ok === false) {
-throw new Error(data?.error || "AI画像生成に失敗しました");
+throw new Error(data?.error || "画像生成に失敗しました");
 }
 
 if (!state.aiCandidates.includes(candidateFile)) {
@@ -1075,7 +1075,7 @@ if (resultCenterMessage) resultCenterMessage.style.display = "flex";
 if (resultCenterIcon) resultCenterIcon.textContent = "";
 
 if (aiPlaceholder) {
-aiPlaceholder.textContent = "AIでたてものをつくっているよ";
+aiPlaceholder.textContent = "つみきがへんしん中";
 aiPlaceholder.style.display = "block";
 }
 
@@ -1137,7 +1137,7 @@ if (resultCenterMessage) resultCenterMessage.style.display = "flex";
 if (resultCenterIcon) resultCenterIcon.textContent = "🎉";
 
 if (aiPlaceholder) {
-aiPlaceholder.innerHTML = "AI画像が<br>完成！";
+aiPlaceholder.innerHTML = "へんしん<br>できた！";
 aiPlaceholder.style.display = "block";
 }
 
@@ -1171,7 +1171,7 @@ for (let attempt = 1; attempt <= maxAttempts; attempt++) {
 try {
 await new Promise((innerResolve, innerReject) => {
 imgElement.onload = () => innerResolve();
-imgElement.onerror = () => innerReject(new Error(`AI画像の読み込みに失敗しました ${attempt}/${maxAttempts}`));
+imgElement.onerror = () => innerReject(new Error(`画像の読み込みに失敗しました ${attempt}/${maxAttempts}`));
 imgElement.src = `${src}&retry=${attempt}&t=${Date.now()}`;
 });
 
@@ -1179,7 +1179,7 @@ resolve();
 return;
 } catch (error) {
 lastError = error;
-console.warn("AI画像読み込みをリトライします", error);
+console.warn("画像読み込みをリトライします", error);
 
 if (attempt < maxAttempts) {
 await sleep(900 * attempt);
@@ -1187,7 +1187,7 @@ await sleep(900 * attempt);
 }
 }
 
-reject(lastError || new Error("AI画像の読み込みに失敗しました"));
+reject(lastError || new Error("画像の読み込みに失敗しました"));
 });
 }
 
@@ -1209,7 +1209,7 @@ throw new Error("signedUrl が取得できませんでした");
 return data.signedUrl;
 } catch (error) {
 lastError = error;
-console.warn("AI画像URL取得をリトライします", error);
+console.warn("画像URL取得をリトライします", error);
 
 if (attempt < maxAttempts) {
 await sleep(900 * attempt);
@@ -1235,7 +1235,7 @@ const resultCenterIcon = document.getElementById("resultCenterIcon");
 if (resultCenterIcon) resultCenterIcon.textContent = "";
 
 if (aiPlaceholder) {
-aiPlaceholder.textContent = "AIがぞうを\nよみこみ中...";
+aiPlaceholder.textContent = "がぞうを\nよみこみ中...";
 aiPlaceholder.style.display = "block";
 }
 
@@ -1321,7 +1321,7 @@ beforeAfterToggle.classList.add("show-before");
 }
 
 if (beforeAfterToggleLabel) {
-beforeAfterToggleLabel.textContent = "AI";
+beforeAfterToggleLabel.textContent = "へんしん";
 }
 } else {
 beforePreview.style.display = "none";
@@ -1597,7 +1597,7 @@ const ctx = canvas.getContext("2d");
 
 ctx.drawImage(baseImg, 0, 0, canvas.width, canvas.height);
 
-/* AI画像：50px下げ */
+/* 画像：50px下げ */
 const aiBaseX = 0;
 const aiBaseY = 266;
 const aiBaseSize = 1024;
@@ -1718,7 +1718,7 @@ async function finalizeCurrentAiImage() {
 const currentFileName = getCurrentAiCandidateFileName();
 
 if (!currentFileName) {
-throw new Error("最終AI画像がありません");
+throw new Error("最終画像がありません");
 }
 
 const fromPath = `outputs/${currentFileName}`;
@@ -1752,7 +1752,7 @@ console.error(error);
 
 const completeMessage = document.getElementById("completeMessage");
 if (completeMessage) {
-completeMessage.textContent = "AI画像を保存できませんでした。スタッフをよんでください";
+completeMessage.textContent = "画像を保存できませんでした。スタッフをよんでください";
 }
 
 return;
@@ -1987,7 +1987,7 @@ if (aiPrevVersionButton) aiPrevVersionButton.style.display = "none";
 if (aiNextVersionButton) aiNextVersionButton.style.display = "none";
 
 if (aiPlaceholder) {
-aiPlaceholder.textContent = "AIでたてものをつくっているよ";
+aiPlaceholder.textContent = "つみきがへんしん中";
 aiPlaceholder.style.display = "block";
 }
 

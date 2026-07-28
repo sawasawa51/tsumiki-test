@@ -46,6 +46,20 @@ onclick="startApp()"
 </div>
 </section>
 
+<!-- あそびかた -->
+<section id="page-howto" class="page center-page howto-page">
+  <div class="howto-stage">
+    <img class="howto-image" src="howto.jpg" alt="あそびかた" />
+    <button class="cube-button howto-next-button" onclick="goToPage('page-number')">
+      <span class="cube-piece cube-piece-1"></span>
+      <span class="cube-piece cube-piece-2"></span>
+      <span class="cube-piece cube-piece-3"></span>
+      <span class="cube-piece cube-piece-4"></span>
+      <span class="cube-button-label">つぎへ</span>
+    </button>
+  </div>
+</section>
+
 <!-- 整理番号 -->
 <section id="page-number" class="page center-page number-page">
 <div class="number-scene">
@@ -385,7 +399,7 @@ capture="environment"
 <span class="cube-piece cube-piece-3"></span>
 <span class="cube-piece cube-piece-4"></span>
 <span class="cube-piece-5"></span>
-<span class="cube-button-label">AIでたてものつくるね</span>
+<span class="cube-button-label">へんしん</span>
 </button>
 
 <button class="cube-button cube-button-small" onclick="restartCardSelection()">
@@ -402,20 +416,20 @@ capture="environment"
 <div id="submitStatus" class="confirm-status"></div>
 </section>
 
-<!-- 完了 / 生成中 / AI画像表示 -->
+<!-- 完了 / へんしん中 / 画像表示 -->
 <section id="page-complete" class="page result-full-page">
 <div class="result-main">
 <div id="resultCenterMessage" class="result-center-message">
 <div id="resultCenterIcon" class="result-center-icon"></div>
 
 <div id="aiPlaceholder" class="result-loading">
-AIでたてものをつくっているよ
+つみきがへんしん中
 </div>
 
 <div id="generatingIcon" class="generating-spinner"></div>
 </div>
 
-<img id="aiPreview" alt="AIで生成した未来の建物" />
+<img id="aiPreview" alt="へんしんした未来の建物" />
 <img id="beforePreview" alt="生成前の積み木写真" />
 
 <button
@@ -423,7 +437,7 @@ id="aiPrevVersionButton"
 class="ai-version-arrow ai-version-arrow-left"
 onclick="showPreviousAiVersion()"
 style="display:none;"
-aria-label="前のAI画像に戻る"
+aria-label="前の画像に戻る"
 >
 ◀
 </button>
@@ -433,7 +447,7 @@ id="aiNextVersionButton"
 class="ai-version-arrow ai-version-arrow-right"
 onclick="showNextAiVersion()"
 style="display:none;"
-aria-label="次のAI画像に進む"
+aria-label="次の画像に進む"
 >
 ▶
 </button>
