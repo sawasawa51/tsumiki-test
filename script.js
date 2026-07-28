@@ -2044,6 +2044,33 @@ updateCardSelectionVisuals();
 goToPage("page-start");
 }
 
+
+function endApp() {
+try {
+resetApp();
+} catch (error) {
+console.error("終了処理に失敗しました", error);
+try {
+stopBuildGuideSlides();
+goToPage("page-start");
+} catch (fallbackError) {
+console.error("スタート画面への復帰に失敗しました", fallbackError);
+window.location.reload();
+}
+}
+
+setTimeout(() => {
+const startPage = document.getElementById("page-start");
+if (!startPage || !startPage.classList.contains("active")) {
+try {
+goToPage("page-start");
+} catch (error) {
+window.location.reload();
+}
+}
+}, 0);
+}
+
 /* ==================================================
 Init
 ================================================== */
