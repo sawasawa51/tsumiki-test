@@ -2045,30 +2045,59 @@ goToPage("page-start");
 }
 
 
-function endApp() {
+function endApp(event) {
+if (event && typeof event.preventDefault === "function") {
+event.preventDefault();
+}
+if (event && typeof event.stopPropagation === "function") {
+event.stopPropagation();
+}
+
+try {
+stopBuildGuideSlides();
+} catch (error) {
+console.error("スライド停止に失敗しました", error);
+}
+
+try {
+if (document.fullscreenElement && document.exitFullscreen) {
+document.exitFullscreen().catch(() => {});
+}
+} catch (error) {
+console.error("フルスクリーン解除に失敗しました", error);
+}
+
 try {
 resetApp();
 } catch (error) {
-console.error("終了処理に失敗しました", error);
-try {
-stopBuildGuideSlides();
-goToPage("page-start");
-} catch (fallbackError) {
-console.error("スタート画面への復帰に失敗しました", fallbackError);
-window.location.reload();
-}
+console.error("リセット処理に失敗しました", error);
 }
 
-setTimeout(() => {
-const startPage = document.getElementById("page-start");
-if (!startPage || !startPage.classList.contains("active")) {
 try {
 goToPage("page-start");
 } catch (error) {
-window.location.reload();
+console.error("スタート画面への復帰に失敗しました", error);
 }
+
+setTimeout(() => {
+try {
+const startPage = document.getElementById("page-start");
+if (startPage && startPage.classList.contains("active")) return;
+} catch (error) {}
+window.location.href = window.location.pathname + window.location.search;
+}, 80);
+
+return false;
 }
-}, 0);
+
+function setupEndButtons() {
+["completeResetButton", "printResetButton"].forEach(id => {
+const button = document.getElementById(id);
+if (!button) return;
+button.onclick = endApp;
+button.addEventListener("click", endApp, true);
+button.addEventListener("touchend", endApp, true);
+});
 }
 
 /* ==================================================
@@ -2105,6 +2134,7 @@ updateNumberDisplay();
 updateStockBars();
 updateCardPageArrows();
 goToPage("page-start");
+setupEndButtons();
 }
 
 initApp();
