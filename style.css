@@ -1799,3 +1799,54 @@ height: 180px;
 .cube-button .cube-piece-5::after {
   content: none;
 }
+
+/* ボタン調整：影なし・角丸なし・文字中央 */
+.cube-button {
+  --cube-shadow: 0px !important;
+  height: calc(var(--cube-size) + 8px) !important;
+}
+
+.cube-button .cube-piece,
+.cube-button .cube-piece-1,
+.cube-button .cube-piece-2,
+.cube-button .cube-piece-3,
+.cube-button .cube-piece-4,
+.cube-button .cube-piece-5 {
+  top: 4px !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  overflow: hidden;
+}
+
+.cube-button:active {
+  transform: none !important;
+}
+
+.cube-button:active .cube-piece,
+.cube-button:active .cube-piece-5 {
+  box-shadow: none !important;
+}
+
+.cube-button-label,
+.cube-button-wide .cube-button-label,
+.cube-button-ai .cube-button-label {
+  top: 4px !important;
+  left: 0 !important;
+  height: var(--cube-size) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  transform: none !important;
+  line-height: 1 !important;
+}
+
+.cube-button .cube-button-label {
+  width: calc(var(--cube-size) * 4) !important;
+}
+
+.cube-button-wide .cube-button-label,
+.cube-button-ai .cube-button-label,
+.cube-button:has(.cube-piece-5) .cube-button-label {
+  width: calc(var(--cube-size) * 5) !important;
+}
