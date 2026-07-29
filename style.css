@@ -2207,3 +2207,54 @@ height: 180px;
 .card-page .selected-card-focus {
   display: none !important;
 }
+
+/* 2026-07-29 result spacing adjustment v3 */
+.result-selected-cards {
+  width: min(100%, 330px) !important;
+  gap: 12px !important;
+}
+
+.result-selected-card {
+  padding: 8px !important;
+  border-radius: 16px !important;
+}
+
+.result-selected-card img {
+  border-radius: 11px !important;
+}
+
+.result-selected-card span {
+  margin-top: 5px !important;
+  font-size: 13px !important;
+}
+
+#completeTitle {
+  top: 46% !important;
+}
+
+#regenerateButton {
+  margin-top: 260px !important;
+}
+
+#goPrintButton {
+  margin-top: 8px !important;
+}
+
+@media (max-width: 760px) {
+  .result-selected-cards {
+    width: min(100%, 300px) !important;
+    gap: 8px !important;
+  }
+
+  .result-selected-card {
+    padding: 6px !important;
+  }
+
+  .result-selected-card span {
+    font-size: 11px !important;
+  }
+
+  #regenerateButton {
+    margin-top: 235px !important;
+  }
+}
