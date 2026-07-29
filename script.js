@@ -21,7 +21,8 @@ showingBefore: false,
 regenerateRemaining: 3,
 aiCandidates: [],
 currentAiCandidateIndex: 0,
-regenerateMode: false
+regenerateMode: false,
+editingResultCardType: null
 };
 
 const promptTables = {
@@ -738,7 +739,12 @@ updateCardNextButton("C");
 }
 
 updateCardSelectionVisuals();
-showSelectedCardFocus(type);
+
+if (state.editingResultCardType === type) {
+state.editingResultCardType = null;
+renderResultSelectedCards();
+goToPage("page-complete");
+}
 }
 
 function getSelectedCardIdByType(type) {
@@ -1104,27 +1110,29 @@ container.style.display = "none";
 return;
 }
 
-container.innerHTML = selected.map(cardId => {
-const label = getCardLabel(cardId);
-const image = getCardImage(cardId);
-return `<div class="result-selected-card"><img src="${image}" alt="${label}" onerror="this.style.display='none';"><span>${label}</span></div>`;
+container.innerHTML = [
+{ type: "A", id: state.q1 },
+{ type: "B", id: state.q2 },
+{ type: "C", id: state.q3 }
+].filter(item => item.id).map(item => {
+const label = getCardLabel(item.id);
+const image = getCardImage(item.id);
+return `<button type="button" class="result-selected-card" onclick="editResultCard('${item.type}')"><img src="${image}" alt="${label}" onerror="this.style.display='none';"><span>${label}</span></button>`;
 }).join("");
 container.style.display = "grid";
 }
 
-function startRegenerateCardSelection() {
-if (state.aiCandidates.length >= 3) {
-updateRegenerateCountText();
-return;
-}
-
-state.regenerateMode = true;
-["A", "B", "C"].forEach(type => {
+function editResultCard(type) {
+state.editingResultCardType = type;
 const page = document.getElementById(`page-card-${type.toLowerCase()}`);
 if (page) page.classList.remove("is-card-focused");
-});
-resetCardScrollPositions();
-goToPage("page-card-a");
+const scroll = document.getElementById(`cardScroll${type}`);
+if (scroll) scroll.scrollLeft = 0;
+goToPage(`page-card-${type.toLowerCase()}`);
+}
+
+function startRegenerateCardSelection() {
+editResultCard("A");
 }
 
 function setupGeneratingScreen() {
@@ -1492,6 +1500,8 @@ state.regenerateRemaining = 3;
 state.aiCandidates = [];
 state.currentAiCandidateIndex = 0;
 state.regenerateMode = false;
+state.editingResultCardType = null;
+state.editingResultCardType = null;
 
 await uploadPhotoToSupabase();
 
