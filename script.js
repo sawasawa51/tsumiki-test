@@ -1772,7 +1772,7 @@ const printSideLogo = document.getElementById("printSideLogo");
 try {
 if (printLoading) {
 printLoading.style.display = "block";
-printLoading.innerHTML = "はがきを<br>つくっているよ";
+printLoading.textContent = "はがきをつくっているよ";
 }
 
 if (printTitle) {
@@ -2034,7 +2034,7 @@ printSideLogo.style.display = "none";
 
 if (printLoading) {
 printLoading.style.display = "block";
-printLoading.innerHTML = "はがきを<br>つくっているよ";
+printLoading.textContent = "はがきをつくっているよ";
 }
 
 updateStockBars();
