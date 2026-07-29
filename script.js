@@ -20,7 +20,8 @@ q3: null,
 showingBefore: false,
 regenerateRemaining: 3,
 aiCandidates: [],
-currentAiCandidateIndex: 0
+currentAiCandidateIndex: 0,
+regenerateMode: false
 };
 
 const promptTables = {
@@ -723,35 +724,73 @@ return cardId;
 function selectCard(type, cardId) {
 if (type === "A") {
 state.q1 = state.q1 === cardId ? null : cardId;
-const button = document.getElementById("cardANextButton");
-
-if (button) {
-button.disabled = !state.q1;
-button.classList.toggle("show-next", !!state.q1);
-}
+updateCardNextButton("A");
 }
 
 if (type === "B") {
 state.q2 = state.q2 === cardId ? null : cardId;
-const button = document.getElementById("cardBNextButton");
-
-if (button) {
-button.disabled = !state.q2;
-button.classList.toggle("show-next", !!state.q2);
-}
+updateCardNextButton("B");
 }
 
 if (type === "C") {
 state.q3 = state.q3 === cardId ? null : cardId;
-const button = document.getElementById("cardCNextButton");
-
-if (button) {
-button.disabled = !state.q3;
-button.classList.toggle("show-next", !!state.q3);
-}
+updateCardNextButton("C");
 }
 
 updateCardSelectionVisuals();
+showSelectedCardFocus(type);
+}
+
+function getSelectedCardIdByType(type) {
+if (type === "A") return state.q1;
+if (type === "B") return state.q2;
+if (type === "C") return state.q3;
+return null;
+}
+
+function updateCardNextButton(type) {
+const selectedId = getSelectedCardIdByType(type);
+const button = document.getElementById(`card${type}NextButton`);
+if (!button) return;
+button.disabled = !selectedId;
+button.classList.toggle("show-next", !!selectedId);
+}
+
+function showSelectedCardFocus(type) {
+const selectedId = getSelectedCardIdByType(type);
+const page = document.getElementById(`page-card-${type.toLowerCase()}`);
+const scroll = document.getElementById(`cardScroll${type}`);
+if (!page || !scroll) return;
+
+const oldFocus = page.querySelector(".selected-card-focus");
+if (oldFocus) oldFocus.remove();
+
+if (!selectedId) {
+page.classList.remove("is-card-focused");
+return;
+}
+
+const label = getCardLabel(selectedId);
+const image = getCardImage(selectedId);
+const focus = document.createElement("div");
+focus.className = "selected-card-focus";
+focus.innerHTML = `
+  <div class="selected-card-focus-card">
+    <div class="selected-card-focus-image"><img src="${image}" alt="${label}" onerror="this.style.display='none'; this.parentElement.textContent='${selectedId}';"></div>
+    <div class="selected-card-focus-label">${label}</div>
+  </div>
+  <div class="selected-card-focus-note">このカードでいいかな？</div>
+  <button type="button" class="selected-card-change-button" onclick="reopenCardGrid('${type}')">えらびなおす</button>
+`;
+scroll.parentElement.appendChild(focus);
+page.classList.add("is-card-focused");
+}
+
+function reopenCardGrid(type) {
+const page = document.getElementById(`page-card-${type.toLowerCase()}`);
+if (!page) return;
+page.classList.remove("is-card-focused");
+setTimeout(updateCardPageArrows, 50);
 }
 
 function updateCardSelectionVisuals() {
@@ -872,6 +911,7 @@ cardCNextButton.classList.remove("show-next");
 }
 
 updateStockBars();
+["A", "B", "C"].forEach(type => { const page = document.getElementById(`page-card-${type.toLowerCase()}`); if (page) page.classList.remove("is-card-focused"); });
 resetCardScrollPositions();
 updateCardSelectionVisuals();
 
@@ -900,6 +940,7 @@ setConfirmCard("Q3", q3Card);
 
 goToPage("page-confirm");
 }
+
 
 function setConfirmCard(type, card) {
 const title = document.getElementById(`confirm${type}Title`);
@@ -1052,6 +1093,40 @@ candidateFile
 };
 }
 
+function renderResultSelectedCards() {
+const container = document.getElementById("resultSelectedCards");
+if (!container) return;
+
+const selected = [state.q1, state.q2, state.q3].filter(Boolean);
+if (!selected.length) {
+container.innerHTML = "";
+container.style.display = "none";
+return;
+}
+
+container.innerHTML = selected.map(cardId => {
+const label = getCardLabel(cardId);
+const image = getCardImage(cardId);
+return `<div class="result-selected-card"><img src="${image}" alt="${label}" onerror="this.style.display='none';"><span>${label}</span></div>`;
+}).join("");
+container.style.display = "grid";
+}
+
+function startRegenerateCardSelection() {
+if (state.aiCandidates.length >= 3) {
+updateRegenerateCountText();
+return;
+}
+
+state.regenerateMode = true;
+["A", "B", "C"].forEach(type => {
+const page = document.getElementById(`page-card-${type.toLowerCase()}`);
+if (page) page.classList.remove("is-card-focused");
+});
+resetCardScrollPositions();
+goToPage("page-card-a");
+}
+
 function setupGeneratingScreen() {
 const resultCenterMessage = document.getElementById("resultCenterMessage");
 const resultCenterIcon = document.getElementById("resultCenterIcon");
@@ -1070,6 +1145,7 @@ const beforeAfterToggleLabel = document.getElementById("beforeAfterToggleLabel")
 const resultSideLogo = document.getElementById("resultSideLogo");
 const aiPrevVersionButton = document.getElementById("aiPrevVersionButton");
 const aiNextVersionButton = document.getElementById("aiNextVersionButton");
+const resultSelectedCards = document.getElementById("resultSelectedCards");
 
 if (resultCenterMessage) resultCenterMessage.style.display = "flex";
 if (resultCenterIcon) resultCenterIcon.textContent = "";
@@ -1093,6 +1169,11 @@ if (regenerateCountText) regenerateCountText.style.display = "none";
 
 if (completeResetButton) completeResetButton.style.display = "none";
 if (goPrintButton) goPrintButton.style.display = "none";
+
+if (resultSelectedCards) {
+resultSelectedCards.innerHTML = "";
+resultSelectedCards.style.display = "none";
+}
 
 if (resultSideLogo) {
 resultSideLogo.style.display = "block";
@@ -1144,6 +1225,8 @@ if (aiPlaceholder) {
 aiPlaceholder.innerHTML = "へんしん<br>できた！";
 aiPlaceholder.style.display = "block";
 }
+
+renderResultSelectedCards();
 
 if (completeTitle) completeTitle.innerHTML = "できあがり！";
 if (completeMessage) completeMessage.textContent = "";
@@ -1408,6 +1491,7 @@ setSubmitStatus("しゃしんをほぞんしています...");
 state.regenerateRemaining = 3;
 state.aiCandidates = [];
 state.currentAiCandidateIndex = 0;
+state.regenerateMode = false;
 
 await uploadPhotoToSupabase();
 
@@ -1415,7 +1499,7 @@ setSubmitStatus("");
 setupGeneratingScreen();
 goToPage("page-complete");
 
-await generateAiImage(1);
+await generateAiImage(state.regenerateMode ? state.aiCandidates.length + 1 : 1);
 
 setupGeneratedScreen();
 await showAiResult(getCurrentAiCandidateFileName());
@@ -1480,6 +1564,7 @@ setupGeneratedScreen();
 await showAiResult(getCurrentAiCandidateFileName());
 
 updateRegenerateCountText();
+state.regenerateMode = false;
 
 } catch (error) {
 console.error(error);
@@ -1898,6 +1983,7 @@ state.showingBefore = false;
 state.regenerateRemaining = 3;
 state.aiCandidates = [];
 state.currentAiCandidateIndex = 0;
+state.regenerateMode = false;
 
 updateNumberDisplay();
 hideNumberMessage();
@@ -1946,6 +2032,7 @@ const beforeAfterToggle = document.getElementById("beforeAfterToggle");
 const beforeAfterToggleLabel = document.getElementById("beforeAfterToggleLabel");
 const aiPrevVersionButton = document.getElementById("aiPrevVersionButton");
 const aiNextVersionButton = document.getElementById("aiNextVersionButton");
+const resultSelectedCards = document.getElementById("resultSelectedCards");
 const aiPlaceholder = document.getElementById("aiPlaceholder");
 const completeTitle = document.getElementById("completeTitle");
 const completeMessage = document.getElementById("completeMessage");

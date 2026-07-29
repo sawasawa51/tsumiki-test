@@ -2018,3 +2018,139 @@ height: 180px;
 #goPrintButton .cube-button-label {
   pointer-events: none !important;
 }
+
+
+/* 2026-07 result selected cards + focused card adjustment */
+.result-selected-cards {
+  display: none;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+  margin: 0 0 4px;
+}
+
+.result-selected-card {
+  min-width: 0;
+  border: 3px solid #3a2a1a;
+  border-radius: 14px;
+  background: #fff8df;
+  padding: 6px;
+  box-shadow: 0 4px 0 rgba(58, 42, 26, 0.16);
+  text-align: center;
+}
+
+.result-selected-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #b9e6ff, #fff0a6);
+}
+
+.result-selected-card span {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1.08;
+  color: #3a2a1a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.result-side {
+  justify-content: center;
+}
+
+#completeTitle {
+  transform: none !important;
+}
+
+.card-page.is-card-focused .card-scroll,
+.card-page.is-card-focused .card-page-arrow {
+  display: none !important;
+}
+
+.selected-card-focus {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 4px 0 0;
+}
+
+.selected-card-focus-card {
+  width: min(42vh, 360px);
+  max-width: 46vw;
+  border: 5px solid #ff3d3d;
+  border-radius: 24px;
+  background: #ffe1a0;
+  padding: 14px;
+  box-shadow: 0 8px 0 rgba(58, 42, 26, 0.18), 0 0 0 8px rgba(255, 61, 61, 0.16);
+}
+
+.selected-card-focus-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #b9e6ff, #fff0a6);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.selected-card-focus-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.selected-card-focus-label {
+  margin-top: 10px;
+  font-size: clamp(18px, 2.4vw, 26px);
+  font-weight: 900;
+  line-height: 1.15;
+  text-align: center;
+  color: #3a2a1a;
+}
+
+.selected-card-focus-note {
+  font-size: clamp(18px, 2.3vw, 24px);
+  font-weight: 900;
+  color: #3a2a1a;
+}
+
+.selected-card-change-button {
+  min-width: 180px;
+  min-height: 48px;
+  border: 3px solid #3a2a1a;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #3a2a1a;
+  font-size: 20px;
+  font-weight: 900;
+  box-shadow: 0 5px 0 rgba(58, 42, 26, 0.18);
+  cursor: pointer;
+}
+
+.selected-card-change-button:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 rgba(58, 42, 26, 0.18);
+}
+
+@media (max-width: 760px) {
+  .result-selected-cards { gap: 6px; }
+  .result-selected-card { padding: 4px; border-width: 2px; border-radius: 10px; }
+  .result-selected-card span { font-size: 9px; }
+  .selected-card-focus-card { max-width: 74vw; width: min(46vh, 320px); }
+}

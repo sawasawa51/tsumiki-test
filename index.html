@@ -473,6 +473,7 @@ aria-label="生成前と生成後を切り替える"
 </div>
 
 <div class="result-side">
+<div id="resultSelectedCards" class="result-selected-cards" aria-label="選択したカード"></div>
 <div id="completeTitle" class="result-side-message"></div>
 
 <div id="completeMessage" class="result-side-message">
@@ -484,7 +485,7 @@ aria-label="生成前と生成後を切り替える"
 <button
 id="regenerateButton"
 class="cube-button cube-button-wide"
-onclick="regenerateAiImage()"
+onclick="startRegenerateCardSelection()"
 style="display:none;"
 >
 <span class="cube-piece cube-piece-1"></span>
