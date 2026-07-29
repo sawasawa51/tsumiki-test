@@ -1094,7 +1094,11 @@ if (regenerateCountText) regenerateCountText.style.display = "none";
 if (completeResetButton) completeResetButton.style.display = "none";
 if (goPrintButton) goPrintButton.style.display = "none";
 
-if (resultSideLogo) resultSideLogo.style.display = "block";
+if (resultSideLogo) {
+resultSideLogo.style.display = "block";
+resultSideLogo.style.width = "420px";
+resultSideLogo.style.maxWidth = "100%";
+}
 
 if (aiPreview) {
 aiPreview.removeAttribute("src");
