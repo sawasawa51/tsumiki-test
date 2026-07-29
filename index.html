@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no"
+/>
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="つみきけんちくか" />
+
+<title>つみきけんちくか</title>
+
+<link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="is-start">
+<main class="app">
+
+<button class="reset-button" onclick="resetApp()">
+RESET
+</button>
+
+<!-- START -->
+<section id="page-start" class="page center-page start-page active">
+<div class="bg-mini-cubes" aria-hidden="true">
+<span class="bg-mini-cube cube-a"></span>
+<span class="bg-mini-cube cube-b"></span>
+<span class="bg-mini-cube cube-c"></span>
+<span class="bg-mini-cube cube-d"></span>
+<span class="bg-mini-cube cube-e"></span>
+<span class="bg-mini-cube cube-f"></span>
+</div>
+
+<img
+class="start-logo start-logo-clickable"
+src="logo.gif"
+alt="つみきけんちくか ロゴ"
+onclick="startApp()"
+/>
+
+<div class="start-click-text blink">
+ロゴをクリックしてね
+</div>
+</section>
+
+<!-- あそびかた -->
+<section id="page-howto" class="page center-page howto-page">
+  <div class="howto-stage">
+    <img class="howto-image" src="howto.jpg" alt="あそびかた" />
+    <button class="cube-button howto-next-button" onclick="goToPage('page-number')">
+      <span class="cube-piece cube-piece-1"></span>
+      <span class="cube-piece cube-piece-2"></span>
+      <span class="cube-piece cube-piece-3"></span>
+      <span class="cube-piece cube-piece-4"></span>
+      <span class="cube-button-label">つぎへ</span>
+    </button>
+  </div>
+</section>
+
+<!-- 整理番号 -->
+<section id="page-number" class="page center-page number-page">
+<div class="number-scene">
+<h1 class="number-title">
+もらったばんごうをおしてね
+</h1>
+
+<div id="numberDisplay" class="number-display" aria-label="整理番号">
+<span class="number-digit number-digit-empty"></span>
+<span class="number-digit number-digit-empty"></span>
+<span class="number-digit number-digit-empty"></span>
+</div>
+
+<p id="numberMessage" class="number-message">
+3けた入れてから ↵ をおしてね
+</p>
+
+<div class="keypad" aria-label="数字キー">
+<button class="key number-key number-key-1" onclick="inputNumber('1')" aria-label="1"></button>
+<button class="key number-key number-key-2" onclick="inputNumber('2')" aria-label="2"></button>
+<button class="key number-key number-key-3" onclick="inputNumber('3')" aria-label="3"></button>
+<button class="key number-key number-key-4" onclick="inputNumber('4')" aria-label="4"></button>
+<button class="key number-key number-key-5" onclick="inputNumber('5')" aria-label="5"></button>
+<button class="key number-key number-key-6" onclick="inputNumber('6')" aria-label="6"></button>
+<button class="key number-key number-key-7" onclick="inputNumber('7')" aria-label="7"></button>
+<button class="key number-key number-key-8" onclick="inputNumber('8')" aria-label="8"></button>
+<button class="key number-key number-key-9" onclick="inputNumber('9')" aria-label="9"></button>
+<button class="key number-key number-key-0" onclick="inputNumber('0')" aria-label="0"></button>
+<button class="key key-control" onclick="backspaceNumber()">←</button>
+<button id="enterKeyButton" class="key key-control" onclick="tryConfirmNumber()">↵</button>
+</div>
+
+<button
+id="numberNextButton"
+class="cube-button number-next-button"
+disabled
+onclick="confirmNumber()"
+>
+<span class="cube-piece cube-piece-1"></span>
+<span class="cube-piece cube-piece-2"></span>
+<span class="cube-piece cube-piece-3"></span>
+<span class="cube-piece cube-piece-4"></span>
+<span class="cube-button-label">つぎへ</span>
+</button>
+
+<img class="number-logo" src="logo.gif" alt="つみきけんちくか ロゴ">
+</div>
+</section>
+
+<!-- 積み木ガイド -->
+<section id="page-build-guide" class="page center-page build-guide-page">
+<div class="build-guide-stage">
+<div class="build-guide-slide-area">
+<div class="build-guide-slide active">
+<img
+class="build-guide-image"
+src="demo1.jpg"
+alt="積み木で未来の建物をつくる説明画像"
+/>
+
+<h1 class="build-guide-title">
+つみきをつんで たてものを つくってみてね
+</h1>
+</div>
+
+<div class="build-guide-slide">
+<img
+class="build-guide-image"
+src="demo2.jpg"
+alt="積み木を高くしすぎない説明画像"
+/>
+
+<h1 class="build-guide-title">
+あまり たかくしないでね
+</h1>
+</div>
+
+<div class="build-guide-slide">
+<img
+class="build-guide-image"
+src="demo3.jpg"
+alt="積み木をなかよく使う説明画像"
+/>
+
+<h1 class="build-guide-title">
+つみきは なかよく つかってね
+</h1>
+</div>
+</div>
+
+<div class="build-guide-footer">
+<p class="build-guide-note">
+できあがったら、したのボタンをおしてね！
+</p>
+
+<button class="cube-button" onclick="goToPage('page-photo-start')">
+<span class="cube-piece cube-piece-1"></span>
+<span class="cube-piece cube-piece-2"></span>
+<span class="cube-piece cube-piece-3"></span>
+<span class="cube-piece cube-piece-4"></span>
+<span class="cube-button-label">できた！</span>
+</button>
+
+<div class="build-guide-dots" aria-hidden="true">
+<div class="build-guide-dot active"></div>
+<div class="build-guide-dot"></div>
+<div class="build-guide-dot"></div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- 写真案内 -->
+<section id="page-photo-start" class="page center-page photo-start-page">
+<div class="bg-mini-cubes" aria-hidden="true">
+<span class="bg-mini-cube cube-a"></span>
+<span class="bg-mini-cube cube-b"></span>
+<span class="bg-mini-cube cube-c"></span>
+<span class="bg-mini-cube cube-d"></span>
+<span class="bg-mini-cube cube-e"></span>
+<span class="bg-mini-cube cube-f"></span>
+</div>
+
+<h1 class="photo-start-title">
+つくったつみきをしゃしんにとろう！
+</h1>
+
+<button class="cube-button cube-button-wide" onclick="openCamera()">
+<span class="cube-piece cube-piece-1"></span>
+<span class="cube-piece cube-piece-2"></span>
+<span class="cube-piece cube-piece-3"></span>
+<span class="cube-piece cube-piece-4"></span>
+<span class="cube-piece-5"></span>
+<span class="cube-button-label">しゃしんをとる</span>
+</button>
+</section>
+
+<!-- 写真確認 -->
+<section id="page-photo-confirm" class="page photo-confirm-page">
+<div class="photo-confirm-layout">
+<div class="photo-confirm-main">
+<div class="photo-confirm-image-frame">
+<img
+id="photoPreview"
+alt="撮影した写真"
+/>
+</div>
+</div>
+
+<div class="photo-confirm-side">
+
+<button id="photoNextButton" class="cube-button cube-button-wide" onclick="goToPage('page-card-a')" disabled>
+<span class="cube-piece cube-piece-1"></span>
+<span class="cube-piece cube-piece-2"></span>
+<span class="cube-piece cube-piece-3"></span>
+<span class="cube-piece cube-piece-4"></span>
+<span class="cube-piece-5"></span>
+<span class="cube-button-label">このしゃしんでOK</span>
+</button>
+
+<button id="retakeButton" class="cube-button" onclick="openCamera()" disabled>
+<span class="cube-piece cube-piece-1"></span>
+<span class="cube-piece cube-piece-2"></span>
+<span class="cube-piece cube-piece-3"></span>
+<span class="cube-piece cube-piece-4"></span>
+<span class="cube-button-label">とりなおす</span>
+</button>
+</div>
+</div>
+</section>
+
+<!-- iPad純正カメラ起動用 -->
+<input
+id="cameraInput"
+class="camera-input"
+type="file"
+accept="image/*"
+capture="environment"
+/>
+
+<!-- Q1 -->
+<section id="page-card-a" class="page card-page">
+<div class="card-header">
+<h1>すきなカードをえらんでください</h1>
+</div>
+
+<div id="cardArrowLeftA" class="card-page-arrow card-page-arrow-left blink">◀</div>
+<div id="cardArrowRightA" class="card-page-arrow card-page-arrow-right blink">▶</div>
+
+<div class="card-layout">
+<div class="card-left">
+<div id="cardScrollA" class="card-scroll"></div>
+</div>
+</div>
+
+<div class="card-action-row">
+<button class="cube-button" onclick="goToPage('page-photo-confirm')">
+<span class="cube-piece cube-piece-1"></span>
+<span class="cube-piece cube-piece-2"></span>
+<span class="cube-piece cube-piece-3"></span>
+<span class="cube-piece cube-piece-4"></span>
+<span class="cube-button-label">もどる</span>
+</button>
+
+<button id="cardANextButton" class="cube-button" disabled onclick="goToPage('page-card-b')">
+<span class="cube-piece cube-piece-1"></span>
+<span class="cube-piece cube-piece-2"></span>
+<span class="cube-piece cube-piece-3"></span>
+<span class="cube-piece cube-piece-4"></span>
+<span class="cube-button-label">つぎへ</span>
+</button>
+</div>
+</section>
+
+<!-- Q2 -->
+<section id="page-card-b" class="page card-page">
+<div class="card-header">
+<h1>すきなカードをえらんでください</h1>
+</div>
+
+<div id="cardArrowLeftB" class="card-page-arrow card-page-arrow-left blink">◀</div>
+<div id="cardArrowRightB" class="card-page-arrow card-page-arrow-right blink">▶</div>
+
+<div class="card-layout">
+<div class="card-left">
+<div id="cardScrollB" class="card-scroll"></div>
+</div>
+</div>
+
+<div class="card-action-row">
+<button class="cube-button" onclick="goToPage('page-card-a')">
+<span class="cube-piece cube-piece-1"></span>
+<span class="cube-piece cube-piece-2"></span>
+<span class="cube-piece cube-piece-3"></span>
+<span class="cube-piece cube-piece-4"></span>
+<span class="cube-button-label">もどる</span>
+</button>
+
+<button id="cardBNextButton" class="cube-button" disabled onclick="goToPage('page-card-c')">
+<span class="cube-piece cube-piece-1"></span>
+<span class="cube-piece cube-piece-2"></span>
+<span class="cube-piece cube-piece-3"></span>
+<span class="cube-piece cube-piece-4"></span>
+<span class="cube-button-label">つぎへ</span>
+</button>
+</div>
+</section>
+
+<!-- Q3 -->
+<section id="page-card-c" class="page card-page">
+<div class="card-header">
+<h1>すきなカードをえらんでください</h1>
+</div>
+
+<div id="cardArrowLeftC" class="card-page-arrow card-page-arrow-left blink">◀</div>
+<div id="cardArrowRightC" class="card-page-arrow card-page-arrow-right blink">▶</div>
+
+<div class="card-layout">
+<div class="card-left">
+<div id="cardScrollC" class="card-scroll"></div>
+</div>
+</div>
+
+<div class="card-action-row">
+<button class="cube-button" onclick="goToPage('page-card-b')">
+<span class="cube-piece cube-piece-1"></span>
+<span class="cube-piece cube-piece-2"></span>
+<span class="cube-piece cube-piece-3"></span>
+<span class="cube-piece cube-piece-4"></span>
+<span class="cube-button-label">もどる</span>
+</button>
+
+<button id="cardCNextButton" class="cube-button" disabled onclick="showConfirmPage()">
+<span class="cube-piece cube-piece-1"></span>
+<span class="cube-piece cube-piece-2"></span>
+<span class="cube-piece cube-piece-3"></span>
+<span class="cube-piece cube-piece-4"></span>
+<span class="cube-button-label">つぎへ</span>
+</button>
+</div>
+</section>
+
+<!-- 確認 -->
+<section id="page-confirm" class="page center-page confirm-page">
+<h1 class="confirm-design-title">
+これでつくるよ！
+</h1>
+
+<div class="confirm-design-row">
+<div class="confirm-design-item">
+<div class="confirm-design-label">あなたのつみき</div>
+<div class="confirm-design-card-title"></div>
+<div id="confirmPhotoImageBox" class="confirm-design-image">
+<div class="confirm-design-placeholder">PHOTO</div>
+<img id="confirmPhotoImage" alt="あなたのつみき" />
+</div>
+</div>
+
+<div class="confirm-design-plus">×</div>
+
+<div class="confirm-design-item">
+<div class="confirm-design-label">1まいめ</div>
+<div id="confirmQ1Title" class="confirm-design-card-title">---</div>
+<div id="confirmQ1ImageBox" class="confirm-design-image">
+<div class="confirm-design-placeholder">Q1</div>
+<img id="confirmQ1Image" alt="Q1で選んだカード" />
+</div>
+</div>
+
+<div class="confirm-design-plus">＋</div>
+
+<div class="confirm-design-item">
+<div class="confirm-design-label">2まいめ</div>
+<div id="confirmQ2Title" class="confirm-design-card-title">---</div>
+<div id="confirmQ2ImageBox" class="confirm-design-image">
+<div class="confirm-design-placeholder">Q2</div>
+<img id="confirmQ2Image" alt="Q2で選んだカード" />
+</div>
+</div>
+
+<div class="confirm-design-plus">＋</div>
+
+<div class="confirm-design-item">
+<div class="confirm-design-label">3まいめ</div>
+<div id="confirmQ3Title" class="confirm-design-card-title">---</div>
+<div id="confirmQ3ImageBox" class="confirm-design-image">
+<div class="confirm-design-placeholder">Q3</div>
+<img id="confirmQ3Image" alt="Q3で選んだカード" />
+</div>
+</div>
+</div>
+
+<div class="confirm-design-buttons">
+<button id="submitButton" class="cube-button cube-button-ai" onclick="submitData()">
+<span class="cube-piece cube-piece-1"></span>
+<span class="cube-piece cube-piece-2"></span>
+<span class="cube-piece cube-piece-3"></span>
+<span class="cube-piece cube-piece-4"></span>
+<span class="cube-piece-5"></span>
+<span class="cube-button-label">へんしん</span>
+</button>
+
+<button class="cube-button cube-button-small" onclick="restartCardSelection()">
+<span class="cube-piece cube-piece-1"></span>
+<span class="cube-piece cube-piece-2"></span>
+<span class="cube-piece cube-piece-3"></span>
+<span class="cube-piece cube-piece-4"></span>
+<span class="cube-button-label">やりなおす</span>
+</button>
+</div>
+
+<img class="confirm-logo-small" src="logo.gif" alt="つみきけんちくか ロゴ" />
+
+<div id="submitStatus" class="confirm-status"></div>
+</section>
+
+<!-- 完了 / へんしん中 / 画像表示 -->
+<section id="page-complete" class="page result-full-page">
+<div class="result-main">
+<div id="resultCenterMessage" class="result-center-message">
+<div id="resultCenterIcon" class="result-center-icon"></div>
+
+<div id="aiPlaceholder" class="result-loading">
+つみきがへんしん中
+</div>
+
+<div id="generatingIcon" class="generating-spinner"></div>
+</div>
+
+<img id="aiPreview" alt="へんしんした未来の建物" />
+<img id="beforePreview" alt="生成前の積み木写真" />
+
+<button
+id="aiPrevVersionButton"
+class="ai-version-arrow ai-version-arrow-left"
+onclick="showPreviousAiVersion()"
+style="display:none;"
+aria-label="前の画像に戻る"
+>
+◀
+</button>
+
+<button
+id="aiNextVersionButton"
+class="ai-version-arrow ai-version-arrow-right"
+onclick="showNextAiVersion()"
+style="display:none;"
+aria-label="次の画像に進む"
+>
+▶
+</button>
+
+<button
+id="beforeAfterToggle"
+class="before-after-toggle"
+onclick="toggleBeforeAfterImage()"
+aria-label="生成前と生成後を切り替える"
+>
+<span class="toggle-block toggle-block-1"></span>
+<span class="toggle-block toggle-block-2"></span>
+<span class="toggle-block toggle-block-3"></span>
+<span id="beforeAfterToggleLabel" class="toggle-label">つみき</span>
+</button>
+</div>
+
+<div class="result-side">
+<div id="completeTitle" class="result-side-message"></div>
+
+<div id="completeMessage" class="result-side-message">
+すこしまってね
+</div>
+
+<img id="resultSideLogo" class="result-side-logo" src="logo.gif" alt="つみきけんちくか ロゴ" />
+
+<button
+id="regenerateButton"
+class="cube-button cube-button-wide"
+onclick="regenerateAiImage()"
+style="display:none;"
+>
+<span class="cube-piece cube-piece-1"></span>
+<span class="cube-piece cube-piece-2"></span>
+<span class="cube-piece cube-piece-3"></span>
+<span class="cube-piece cube-piece-4"></span>
+<span class="cube-piece-5"></span>
+<span class="cube-button-label">もういっかい</span>
+</button>
+
+<div id="regenerateCountText" class="regenerate-count-text">3/3</div>
+
+<button
+id="goPrintButton"
+class="cube-button cube-button-wide"
+onclick="goToPrintPage()"
+style="display:none;"
+>
+<span class="cube-piece cube-piece-1"></span>
+<span class="cube-piece cube-piece-2"></span>
+<span class="cube-piece cube-piece-3"></span>
+<span class="cube-piece cube-piece-4"></span>
+<span class="cube-piece-5"></span>
+<span class="cube-button-label">カードをつくる</span>
+</button>
+
+<button
+id="completeResetButton"
+class="cube-button cube-button-wide"
+onclick="resetApp()"
+style="display:none;"
+>
+<span class="cube-piece cube-piece-1"></span>
+<span class="cube-piece cube-piece-2"></span>
+<span class="cube-piece cube-piece-3"></span>
+<span class="cube-piece cube-piece-4"></span>
+<span class="cube-piece-5"></span>
+<span class="cube-button-label">おわり</span>
+</button>
+</div>
+</section>
+
+<!-- はがきレイアウト / QR -->
+<section id="page-print" class="page print-page">
+<div class="print-main">
+<div id="printLoading" class="print-loading">
+はがきを<br><br>つくっているよ
+</div>
+
+<img id="printPreview" class="print-preview" alt="完成したはがき画像" />
+</div>
+
+<div class="print-side">
+<div id="printTitle" class="print-title">
+はがきができたよ！
+</div>
+
+<img id="printSideLogo" class="print-side-logo" src="logo.gif" alt="つみきけんちくか ロゴ" />
+
+<div id="printQrBox" class="print-qr-box"></div>
+
+<div id="printDownloadText" class="print-download-text">
+iPhoneでQRコードを<br><br>よみこむこともできるよ
+</div>
+
+<div id="printStatus" class="print-status"></div>
+
+<button
+id="printResetButton"
+class="cube-button cube-button-wide"
+onclick="resetApp()"
+style="display:none;"
+>
+<span class="cube-piece cube-piece-1"></span>
+<span class="cube-piece cube-piece-2"></span>
+<span class="cube-piece cube-piece-3"></span>
+<span class="cube-piece cube-piece-4"></span>
+<span class="cube-piece-5"></span>
+<span class="cube-button-label">おわり</span>
+</button>
+</div>
+</section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<script src="script.js"></script>
+</body>
+</html>
