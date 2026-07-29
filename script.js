@@ -2053,30 +2053,27 @@ if (event && typeof event.stopPropagation === "function") {
 event.stopPropagation();
 }
 
+const pressedButton = event && event.currentTarget ? event.currentTarget : null;
+if (pressedButton) {
+pressedButton.disabled = true;
+pressedButton.style.pointerEvents = "none";
+pressedButton.style.opacity = "1";
+}
+
 try {
 stopBuildGuideSlides();
 } catch (error) {
 console.error("スライド停止に失敗しました", error);
 }
 
-try {
-if (document.fullscreenElement && document.exitFullscreen) {
-document.exitFullscreen().catch(() => {});
-}
-} catch (error) {
-console.error("フルスクリーン解除に失敗しました", error);
-}
-
+// 見た目が急に動かないように、フルスクリーン解除や即時リロードはしない。
+// まず自然にスタート画面へ戻し、戻れなかった時だけ最後の保険でリロードする。
+setTimeout(() => {
 try {
 resetApp();
-} catch (error) {
-console.error("リセット処理に失敗しました", error);
-}
-
-try {
 goToPage("page-start");
 } catch (error) {
-console.error("スタート画面への復帰に失敗しました", error);
+console.error("終了処理に失敗しました", error);
 }
 
 setTimeout(() => {
@@ -2085,7 +2082,8 @@ const startPage = document.getElementById("page-start");
 if (startPage && startPage.classList.contains("active")) return;
 } catch (error) {}
 window.location.href = window.location.pathname + window.location.search;
-}, 80);
+}, 300);
+}, 120);
 
 return false;
 }
