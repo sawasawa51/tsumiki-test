@@ -2304,3 +2304,41 @@ height: 180px;
 #submitButton .cube-button-label {
   width: calc(var(--cube-size) * 5) !important;
 }
+
+
+/* Fix 20260730: keep buttons fixed while pressing */
+#printResetButton,
+#printResetButton:active,
+#printResetButton:focus,
+#printResetButton:hover {
+  transform: translateX(-40px) !important;
+  margin-top: 0 !important;
+  position: relative !important;
+}
+#printResetButton.cube-button-wide:active,
+#printResetButton.cube-button-wide:focus {
+  transform: translateX(-40px) !important;
+}
+
+/* 写真確認画面：とりなおすボタンを押しても動かさず、確実に押せるようにする */
+#retakeButton,
+#retakeButton:active,
+#retakeButton:focus,
+#retakeButton:hover {
+  transform: translateY(100px) !important;
+  margin-top: 0 !important;
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+  opacity: 1 !important;
+  z-index: 2147483000 !important;
+  position: relative !important;
+}
+#retakeButton .cube-piece,
+#retakeButton .cube-piece-1,
+#retakeButton .cube-piece-2,
+#retakeButton .cube-piece-3,
+#retakeButton .cube-piece-4,
+#retakeButton .cube-piece-5,
+#retakeButton .cube-button-label {
+  pointer-events: none !important;
+}

@@ -2217,3 +2217,19 @@ document.addEventListener("click", handleOwariResetEvent, true);
 document.addEventListener("pointerup", handleOwariResetEvent, true);
 document.addEventListener("touchend", handleOwariResetEvent, true);
 /* OWARI_RESET_DELEGATE_END */
+
+
+/* Fix 20260730: stable retake button on iPad/touch */
+function handleRetakeCameraEvent(event) {
+const button = document.getElementById("retakeButton");
+if (!button || button.disabled) return;
+const target = event.target;
+if (target === button || (target && button.contains(target))) {
+event.preventDefault();
+event.stopPropagation();
+if (typeof event.stopImmediatePropagation === "function") event.stopImmediatePropagation();
+openCamera();
+}
+}
+document.addEventListener("click", handleRetakeCameraEvent, true);
+document.addEventListener("touchend", handleRetakeCameraEvent, true);
