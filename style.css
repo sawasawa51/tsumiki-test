@@ -2258,3 +2258,49 @@ height: 180px;
     margin-top: 235px !important;
   }
 }
+
+
+/* Requested final adjustments 20260729 */
+/* はがき完了ページ：おわりボタンをQRと同じ左寄せ位置へ */
+#printResetButton {
+  transform: translateX(-40px) !important;
+  margin-top: 0 !important;
+}
+
+/* 再生成画面：選択カードは文字・枠なしで画像を最大化 */
+.result-selected-cards {
+  width: min(100%, 430px) !important;
+  gap: 8px !important;
+}
+.result-selected-card {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+.result-selected-card img {
+  width: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+  object-fit: cover !important;
+  border-radius: 0 !important;
+}
+.result-selected-card span {
+  display: none !important;
+}
+
+/* これでつくるよ画面：へんしん！！の幅調整 */
+#submitButton.cube-button-ai {
+  --visual-width: calc(var(--cube-size) * 5);
+  width: calc(var(--cube-size) * 5) !important;
+}
+#submitButton.cube-button-ai .cube-piece,
+#submitButton.cube-button-ai .cube-piece-1,
+#submitButton.cube-button-ai .cube-piece-2,
+#submitButton.cube-button-ai .cube-piece-3,
+#submitButton.cube-button-ai .cube-piece-4 {
+  width: calc(var(--cube-size) * 5) !important;
+}
+#submitButton .cube-button-label {
+  width: calc(var(--cube-size) * 5) !important;
+}

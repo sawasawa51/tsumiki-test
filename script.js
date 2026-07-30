@@ -1734,8 +1734,8 @@ photoSize
 
 ctx.save();
 ctx.fillStyle = "#ffffff";
-ctx.fillRect(photoX, photoY, photoSize, 20);
-ctx.fillRect(photoX + photoSize - 20, photoY, 20, photoSize);
+ctx.fillRect(photoX, photoY, photoSize, 10);
+ctx.fillRect(photoX + photoSize - 10, photoY, 10, photoSize);
 ctx.restore();
 
 ctx.save();
@@ -1748,12 +1748,12 @@ ctx.shadowBlur = 6;
 /* 通し番号 */
 const numberX = canvas.width - 54;
 const numberY = 192;
-ctx.font = "900 58px 'Hiragino Maru Gothic ProN', 'Hiragino Sans', system-ui, sans-serif";
+ctx.font = "900 72px 'Hiragino Maru Gothic ProN', 'Hiragino Sans', system-ui, sans-serif";
 ctx.fillText(state.entryId || "", numberX, numberY);
 
 const numberWidth = ctx.measureText(state.entryId || "").width;
-ctx.font = "900 24px 'Hiragino Maru Gothic ProN', 'Hiragino Sans', system-ui, sans-serif";
-ctx.fillText("no.", numberX - numberWidth - 10, numberY + 4);
+ctx.font = "900 36px 'Hiragino Maru Gothic ProN', 'Hiragino Sans', system-ui, sans-serif";
+ctx.fillText("No.", numberX - numberWidth - 10, numberY + 4);
 
 ctx.restore();
 
