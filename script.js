@@ -4,6 +4,8 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const SUPABASE_BUCKET = "tsumiki-ipad";
 const TRANSFORM_FUNCTION_NAME = "rapid-function";
+const DEBUG_MODE = true;
+const AI_RESULT_RETRY_ATTEMPTS = 10;
 
 const state = {
 numberInput: "",
@@ -1006,7 +1008,7 @@ Requirements:
 - Do not change the original camera angle, composition, or viewpoint.
 - Preserve the shape, silhouette, stacking structure, and volume of the wooden blocks.
 - Reflect the Q1 and Q3 prompt contents in the architectural design.
-- Use the selected Q2 reference image as inspiration for the building's exterior design.
+${state.q2 ? "- Use the selected Q2 reference image as inspiration for the building's exterior design." : ""}
 - Transform the child's wooden block creation into a futuristic architectural concept.
 - Make the result bright, playful, imaginative, and dreamlike.
 - Do not include people.
@@ -1014,15 +1016,31 @@ Requirements:
 - Square image.`.trim();
 }
 
+function getReferenceImagePath(cardId) {
+const record = getPromptRecord(cardId);
+const image = record && record.image ? String(record.image).trim() : "";
+
+// Prefer the CSV image path when it points to Storage.
+// If the CSV contains a local relative path such as cards/B-01.jpg, pass that through.
+if (image && !/^https?:\/\//i.test(image) && !image.startsWith("data:")) {
+return image.replace(/^\.\//, "").replace(/^\//, "");
+}
+
+// Fallback for existing deployments where card files are named by card ID.
+return `cards/${cardId}.jpg`;
+}
+
 function getReferenceImages() {
 if (!state.q2) return [];
+
+const path = getReferenceImagePath(state.q2);
 
 return [
 {
 type: "q2_card",
 card_id: state.q2,
 bucket: SUPABASE_BUCKET,
-path: `cards/${state.q2}.jpg`,
+path,
 instruction: "Use this image as visual inspiration for the building exterior design."
 }
 ];
@@ -1069,22 +1087,41 @@ return state.aiCandidates[state.currentAiCandidateIndex] || "";
 async function generateAiImage(candidateIndex) {
 const prompt = buildAiPrompt();
 const candidateFile = getAiCandidateFileName(candidateIndex);
-
-const { data, error } = await supabaseClient.functions.invoke(TRANSFORM_FUNCTION_NAME, {
-body: {
+const referenceImages = getReferenceImages();
+const requestBody = {
 photo_path: `photos/${state.photoFile}`,
 output_path: `outputs/${candidateFile}`,
 prompt,
-reference_images: getReferenceImages()
+reference_images: referenceImages
+};
+
+if (DEBUG_MODE) {
+console.log("AI generation request", {
+candidateIndex,
+candidateFile,
+photoFile: state.photoFile,
+photoBlobSize: state.photoBlob?.size || 0,
+referenceImages,
+prompt
+});
 }
+
+const { data, error } = await supabaseClient.functions.invoke(TRANSFORM_FUNCTION_NAME, {
+body: requestBody
 });
 
 if (error) {
-throw error;
+console.error("Supabase function invoke failed", error);
+throw new Error(error.message || "画像生成サーバーの呼び出しに失敗しました");
+}
+
+if (DEBUG_MODE) {
+console.log("AI generation response", data);
 }
 
 if (!data || data.ok === false) {
-throw new Error(data?.error || "画像生成に失敗しました");
+console.error("AI generation failed", data);
+throw new Error(data?.error || data?.message || "画像生成に失敗しました");
 }
 
 if (!state.aiCandidates.includes(candidateFile)) {
@@ -1339,9 +1376,9 @@ if (!aiPreview) return;
 aiPreview.style.display = "none";
 
 try {
-const signedUrl = await createSignedUrlWithRetry(aiPath, 5);
+const signedUrl = await createSignedUrlWithRetry(aiPath, AI_RESULT_RETRY_ATTEMPTS);
 
-await loadImageWithRetry(aiPreview, signedUrl, 5);
+await loadImageWithRetry(aiPreview, signedUrl, AI_RESULT_RETRY_ATTEMPTS);
 
 aiPreview.style.display = "block";
 
@@ -1501,9 +1538,10 @@ state.aiCandidates = [];
 state.currentAiCandidateIndex = 0;
 state.regenerateMode = false;
 state.editingResultCardType = null;
-state.editingResultCardType = null;
 
+if (DEBUG_MODE) console.log("Photo upload start", { photoFile: state.photoFile, photoBlobSize: state.photoBlob?.size || 0 });
 await uploadPhotoToSupabase();
+if (DEBUG_MODE) console.log("Photo upload done", { photoFile: state.photoFile });
 
 setSubmitStatus("");
 setupGeneratingScreen();
